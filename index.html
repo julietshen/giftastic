@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Gif-Tastic!</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+</head>
+
+<body>
+    <div class="container">
+        <div class="row" >
+            <h1>Search Gifs</h1>
+            <form id="movie-form">
+                <label for="movie-input">Search for a gif here:</label>
+                <input type="text" id="movie-input"><br>
+
+                <!-- This button will trigger our AJAX call -->
+                <input id="find-movie" type="submit" value="Gif Search">
+            </form>
+
+            <ol id="list">
+                <h2>Recent Results</h2>
+                <div id="past"></div>
+            </ol>
+        <div id="movie-view"></div>
+  
+  
+        </div>
+        <script src="https://code.jquery.com/jquery-2.1.3.min.js"></script>
+        <script type="text/javascript">
+         var displayData = function(display, movie) {
+             return function(response) {
+                 $("#movie-view").html("<div class='gif'></div>");                 
+                 for (var i=0; i<25; i++) {
+                     $(".gif").append("<br><img src='" + response.data[i].images.fixed_height_small.url+ "'>");
+                     if (display && i === 0) {
+                         $("#past").prepend("<li><button class='rerun'>" + movie + "</button></li>");
+                     }
+                 }
+             }
+         };
+         // This .on("click") function will trigger the AJAX Call
+         $("#find-movie").on("click", function(event) {
+             // Preventing the submit button from trying to submit the form
+             // We're optionally using a form so the user may hit Enter to search instead of clicking the button
+             event.preventDefault();
+             // Here we grab the text from the input box
+             var movie = $("#movie-input").val().trim().replace(' ','+');
+             // Here we construct our URL
+             var queryURL = "https://api.giphy.com/v1/gifs/search?api_key=dc6zaTOxFJmzC&rating=g&q=" + movie;
+             // Write code between the dashes below to hit the queryURL with $ajax, then take the response data
+             // and display it in the div with an id of movie-view
+             // YOUR CODE GOES IN THESE DASHES. DO NOT MANUALLY EDIT THE HTML ABOVE
+             // =================================================================
+             
+             $.ajax({
+                 url: queryURL,
+                 method: "GET"
+             }).done(displayData(true,movie));
+             // =================================================================
+         });
+         $("#list").on("click", "li", "button", function(event) {
+             console.log("Rerun clicked");
+             // Here we grab the text from the input box
+             var movie = $(this).text();
+             // Here we construct our URL
+             var queryURL = "https://api.giphy.com/v1/gifs/search?api_key=dc6zaTOxFJmzC&rating=g&q=" + movie;
+             // Write code between the dashes below to hit the queryURL with $ajax, then take the response data
+             // and display it in the div with an id of movie-view
+             // YOUR CODE GOES IN THESE DASHES. DO NOT MANUALLY EDIT THE HTML ABOVE
+             // =================================================================
+             $.ajax({
+                 url: queryURL,
+                 method: "GET"
+             }).done(displayData(false,movie));
+         });
+        </script>
+    </div>
+</body>
+
+</html>
